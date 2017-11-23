@@ -11,12 +11,17 @@ const htmlWebpackPluginConfig = new HtmlWebpackPlugin({
 
 
 module.exports = {
-    entry: [
-        path.join(baseDir, 'js/index.js'),
-        path.join(baseDir, 'scss/main.scss')
-    ],
+    entry: {
+        bundle: [
+            path.join(baseDir, 'js/index.js'),
+            path.join(baseDir, 'scss/main.scss')
+        ],
+        main: [
+            path.join(baseDir, 'js/plugins/ClassModifier.js'),
+        ]
+    },
     output: {
-        filename: 'bundle.js'
+        filename: '[name].js'
     },
     module: {
         rules: [
