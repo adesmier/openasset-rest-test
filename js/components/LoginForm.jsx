@@ -1,6 +1,7 @@
 import React from 'react';
 
-import auth from '../scripts/BasicAuth.js';
+import Auth from '../scripts/BasicAuth.js';
+import Cookie from '../scripts/Cookie.js';
 
 
 export default class LoginForm extends React.Component{
@@ -9,6 +10,12 @@ export default class LoginForm extends React.Component{
         oaUrl: {value: '', isEmptyClass: ''},
         oaUsername: {value: '', isEmptyClass: ''},
         oaPassword: {value: '', isEmptyClass: ''},
+    }
+
+    componentDidMount(){
+        //check for existing session cookie
+        //if valid then notify that there's
+        //no need to login
     }
 
     inputChangeHandler = (evt) => {
@@ -53,9 +60,12 @@ export default class LoginForm extends React.Component{
                 oaUsername: credentials.oaUsername,
                 oaPassword: credentials.oaPassword
             });
-        } else {
+        } else { //no fields empty so make auth api call
+
+            
+
             console.log(this.state)
-            auth.authenticate(credentials.oaUrl.value,
+            Auth.authenticate(credentials.oaUrl.value,
                 credentials.oaUsername.value,
                 credentials.oaPassword.value).then(data => {
                 console.log('success');
@@ -64,7 +74,6 @@ export default class LoginForm extends React.Component{
                 console.log('error');
                 console.log(error);
             });
-
 
         }
         

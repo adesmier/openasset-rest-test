@@ -13,28 +13,22 @@ export default {
         let config = {
             method: 'get',
             headers: {
-                'Access-Control-Allow-Origin': '*'
+                'X-SessionKey': 'AD274A2451823DBF006FB00A5485033C'
             },
-            auth: {
-                username: username,
-                password: password
-            }
+            // auth: {
+            //     username: username,
+            //     password: password
+            // }
         };
 
         console.log('full url is ' + fullUrl);
 
         return axios.get(fullUrl, config).then(response => {
             console.log('in auth');
-            return {
-                status: response.status,
-                data: response.data
-            }
+            return response
         }).catch(error => {
             console.log('in error');
-            return {
-                status: error.response.data.status,
-                data: error.response.data.message
-            }
+            return error
         });
 
    }
