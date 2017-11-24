@@ -1,25 +1,37 @@
 import React from 'react';
 
 import Auth from '../scripts/BasicAuth.js';
-import Cookie from '../scripts/Cookie.js';
+import Cookie from '../scripts/Cookies.js';
+import {OA_COOKIE_KEY, OA_COOKIE_EXPIRY} from '../scripts/Constants';
 
 
 export default class LoginForm extends React.Component{
 
     state = {
-        oaUrl: {value: '', isEmptyClass: ''},
-        oaUsername: {value: '', isEmptyClass: ''},
-        oaPassword: {value: '', isEmptyClass: ''},
+        credentials: {
+            oaUrl: {value: '', isEmptyClass: ''},
+            oaUsername: {value: '', isEmptyClass: ''},
+            oaPassword: {value: '', isEmptyClass: ''},
+        },
+        sessionStatus: 'You don\'t have an active session. Please log in:'
     }
 
     componentDidMount(){
         //check for existing session cookie
         //if valid then notify that there's
         //no need to login
+        let cookie = Cookie.getCookie([OA_COOKIE_KEY, OA_COOKIE_EXPIRY]);
+        console.log(cookie);
+
+        if(cookie[OA_COOKIE_KEY]){
+            this.setState({
+                sessionStatus: 'Your previous session is still active. No need to log in.'
+            });
+        }
     }
 
     inputChangeHandler = (evt) => {
-        let credentials = this.state;
+        let credentials = this.state.credentials;
         let value;
         if(evt.target.name === 'oaUrl'){
             const subDomain = evt.target.value;
@@ -31,14 +43,16 @@ export default class LoginForm extends React.Component{
         credentials[evt.target.name].value = value;
 
         this.setState({
-            oaUrl: credentials.oaUrl,
-            oaUsername: credentials.oaUsername,
-            oaPassword: credentials.oaPassword
+            credentials: {
+                oaUrl: credentials.oaUrl,
+                oaUsername: credentials.oaUsername,
+                oaPassword: credentials.oaPassword
+            }     
         });
     }
 
     authRequest = () => {
-        let credentials = this.state;
+        let credentials = this.state.credentials;
         let hasEmptyField = false;
 
         //if any input fields are empty then a class will be added
@@ -56,9 +70,11 @@ export default class LoginForm extends React.Component{
 
         if(hasEmptyField){
             this.setState({
-                oaUrl: credentials.oaUrl,
-                oaUsername: credentials.oaUsername,
-                oaPassword: credentials.oaPassword
+                credentials: {
+                    oaUrl: credentials.oaUrl,
+                    oaUsername: credentials.oaUsername,
+                    oaPassword: credentials.oaPassword
+                } 
             });
         } else { //no fields empty so make auth api call
 
@@ -70,6 +86,12 @@ export default class LoginForm extends React.Component{
                 credentials.oaPassword.value).then(data => {
                 console.log('success');
                 console.log(data);
+
+                let sessionKey = data.headers['x-sessionkey'];
+                let expiry = data.headers.expires;
+                Cookie.setCookie(OA_COOKIE_KEY, sessionKey, expiry);
+                Cookie.setCookie(OA_COOKIE_EXPIRY, expiry, expiry);
+
             }).catch(error => {
                 console.log('error');
                 console.log(error);
@@ -80,9 +102,13 @@ export default class LoginForm extends React.Component{
     }
 
     render(){
-        const {oaUrl, oaUsername, oaPassword} = this.state;
+        const {oaUrl, oaUsername, oaPassword} = this.state.credentials;
+        const {sessionStatus} = this.state;
 
-        return(
+        return[
+            <div className="session-check">
+                <span><em>{sessionStatus}</em></span>
+            </div>,
             <form>
                 <div className="row">
                     <div>
@@ -121,6 +147,6 @@ export default class LoginForm extends React.Component{
                 </div>
                 <hr />
             </form>
-        )
+        ];
     }
 }

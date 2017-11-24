@@ -25,7 +25,10 @@ export default {
 
         return axios.get(fullUrl, config).then(response => {
             console.log('in auth');
-            return response
+            return {
+                data: response.data,
+                headers: response.headers
+            }
         }).catch(error => {
             console.log('in error');
             return error
