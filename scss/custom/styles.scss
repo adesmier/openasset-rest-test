@@ -51,6 +51,13 @@
     transition: all 0.3s;
 }
 
+input[type]{
+    transition: background-color 0.3s;
+    &:focus{
+        background-color: #eeeeee;
+        transition: background-color 0.3s;
+    }
+}
 input.auth-input-empty[type]{
     border: 1px solid #cc2828;
 }
@@ -58,3 +65,30 @@ input.auth-input-empty[type]{
 .session-check{
     margin-bottom: 20px;
 }
+
+#submit-btn-wrapper{
+    display: flex;
+    button{
+        width: 120px;
+        i{
+            font-weight: 300;
+            font-size: 140%;
+        }
+    }
+}
+
+.login-status{
+    font-size: 85%;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.login-status.success{
+    color: #2c742c;
+}
+.login-status.error{
+    color: #be2e2e;
+}
+
+
+
+
