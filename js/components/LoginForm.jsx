@@ -1,8 +1,10 @@
 import React from 'react';
 
-import Auth from '../scripts/BasicAuth.js';
+import SessionStore from '../flux/stores/SessionStore.js'
+import * as SessionActions from '../flux/actions/SessionActions.js';
+import ApiReq from '../scripts/ApiRequester.js';
 import SessionCache from '../scripts/SessionCache.js';
-import {OA_API_KEY} from '../scripts/Constants';
+import {OA_LOCAL_STORE_NAME} from '../scripts/Constants';
 
 
 export default class LoginForm extends React.Component{
@@ -13,7 +15,7 @@ export default class LoginForm extends React.Component{
             oaUsername: {value: '', isEmptyClass: ''},
             oaPassword: {value: '', isEmptyClass: ''},
         },
-        sessionStatus: 'You don\'t have an active session. Please log in:',
+        sessionStatus: SessionStore.getSession(),
         loginStatus: {
             message: '',
             class: ''
@@ -21,58 +23,69 @@ export default class LoginForm extends React.Component{
         authStatus: 0
     }
 
-    componentDidMount(){
-        let sessionData = SessionCache.getSessionData(OA_API_KEY);
-
-        if(sessionData){
-            let user = ''; let username = '';
-            let url = ''; let session = '';
-
-            if(sessionData.headers && sessionData.headers['x-sessionkey']){
-                session = sessionData.headers['x-sessionkey'];
-                if(sessionData.oaUrl){
-                    url = sessionData.oaUrl;
-                    if(sessionData.data[0]){
-                        user = sessionData.data[0].full_name;
-                        username = sessionData.data[0].username;
-                    }
-                }
-            } else {
-                console.error('There is no session key stored in the cached session data');
-                return;
-            }
-
-            //check if stored key is still valid
-            Auth.authenticate(true, url,username,session).then(response => {
-
-                if(response.data.error_message && response.status === 401){
-                    this.setState({
-                        sessionStatus: `Welcome back ${user}. Your previous session 
-                                        has expired. Please log in again.`,
-                        loginStatus: {
-                            message: `Existing session invalid: Session Key ${session}`,
-                            class: 'error'
-                        }
-                    });
-                } else if(response.status === 200){
-                    this.setState({
-                        sessionStatus: `Welcome back ${user}. Your previous session 
-                                        is still active. No need to login.`,
-                        loginStatus: {
-                            message: `Authentication successful: Using existing session Key ${session}`,
-                            class: 'success'
-                        },
-                        authStatus: 2
-                    });
-                }
-                console.log(response);
-                
-            }).catch(error => { //general network error
-                console.log(error);
+    componentWillMount(){
+        SessionStore.on('change', () => {
+            this.setState({
+                sessionStatus: SessionStore.getSession()
             });
+        });
+    }
+
+    componentDidMount(){
+        SessionActions.checkSession(OA_LOCAL_STORE_NAME);
+
+
+        // let sessionData = SessionCache.getSessionData(OA_LOCAL_STORE_NAME);
+
+        // if(sessionData){
+        //     let user = ''; let username = '';
+        //     let url = ''; let session = '';
+
+        //     if(sessionData.headers && sessionData.headers['x-sessionkey']){
+        //         session = sessionData.headers['x-sessionkey'];
+        //         if(sessionData.oaUrl){
+        //             url = sessionData.oaUrl;
+        //             if(sessionData.data[0]){
+        //                 user = sessionData.data[0].full_name;
+        //                 username = sessionData.data[0].username;
+        //             }
+        //         }
+        //     } else {
+        //         console.error('There is no session key stored in the cached session data');
+        //         return;
+        //     }
+
+        //     //check if stored key is still valid
+        //     ApiReq.authenticate(true, url,username,session).then(response => {
+
+        //         if(response.data.error_message && response.status === 401){
+        //             this.setState({
+        //                 sessionStatus: `Welcome back ${user}. Your previous session 
+        //                                 has expired. Please log in again.`,
+        //                 loginStatus: {
+        //                     message: `Existing session invalid: Session Key ${session}`,
+        //                     class: 'error'
+        //                 }
+        //             });
+        //         } else if(response.status === 200){
+        //             this.setState({
+        //                 sessionStatus: `Welcome back ${user}. Your previous session 
+        //                                 is still active. No need to login.`,
+        //                 loginStatus: {
+        //                     message: `Authentication successful: Using existing session Key ${session}`,
+        //                     class: 'success'
+        //                 },
+        //                 authStatus: 2
+        //             });
+        //         }
+        //         console.log(response);
+                
+        //     }).catch(error => { //general network error
+        //         console.log(error);
+        //     });
         
             
-        }
+        // }
 
     }
 
@@ -128,13 +141,13 @@ export default class LoginForm extends React.Component{
             this.setState({authStatus: 1});
 
             console.log(this.state);
-            Auth.authenticate(false, credentials.oaUrl.value,
+            ApiReq.authenticate(false, credentials.oaUrl.value,
                 credentials.oaUsername.value,
                 credentials.oaPassword.value).then(response => {
 
                 if(response.status === 200){
                     //session key saved in localstorage for persistence
-                    SessionCache.setSessionData(OA_API_KEY, response, credentials.oaUrl.value);
+                    SessionCache.setSessionData(OA_LOCAL_STORE_NAME, response, credentials.oaUrl.value);
                     let key = response.headers['x-sessionkey'];
                     this.setState({
                         loginStatus: {
@@ -235,6 +248,7 @@ export default class LoginForm extends React.Component{
                     <span className={['login-status', loginStatus.class].join(' ')}>
                         {loginStatus.message}
                     </span>
+                    <span>{this.state.testStore.key}</span>
                 </div>
                 <hr />
             </form>
