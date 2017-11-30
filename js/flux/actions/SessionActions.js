@@ -1,6 +1,7 @@
 import Dispatcher from '../Dispatcher.js';
-import {FLUX_ACTIONS} from '../../scripts/Constants.js';
-import SessionCache from '../scripts/SessionCache.js';
+import {OA_LOCAL_STORE_NAME, FLUX_ACTIONS} from '../../scripts/Constants.js';
+import SessionCache from '../../scripts/SessionCache.js';
+import ApiReq from '../../scripts/ApiRequester.js';
 
 export function checkSession(localStoreName){
     let sessionData = SessionCache.getSessionData(localStoreName);
@@ -19,22 +20,106 @@ export function checkSession(localStoreName){
                 }
             }
         } else {
-            console.error('There is no session key stored in the cached session data');
+            console.error(`There is no session key stored in 
+                           the cached session data`);
             return;
         }
+
+        //check if stored key is still valid
+        ApiReq.authenticate(true, url, username, session).then(response => {
+
+            if(response.data.error_message && response.status === 401){
+                Dispatcher.dispatch({
+                    actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                    payload: {
+                        message: `Welcome back ${user}. Your previous 
+                                  session has expired. Please log in again.`
+                    }
+                });
+            } else if(response.status === 200){
+                Dispatcher.dispatch({
+                    actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                    payload: {
+                        fullName: user,
+                        key: session,
+                        message: `Welcome back ${user}. Your previous session
+                                  is still active. No need to login.`,
+                        loginStatus: {
+                            code: 2,
+                            message: `Authentication successful: Using existing
+                                      session Key ${session}`,
+                            class: 'success'
+                        }
+                    }
+                });
+            }
+            
+        }).catch(error => { //general error e.g. not internet connection
+            console.error(error);
+        });
+
     } else {
         Dispatcher.dispatch({
-            actionType: FLUX_ACTIONS.CHECK_SESSION,
+            actionType: FLUX_ACTIONS.UPDATE_SESSION,
             payload: {
-                username: '',
-                key: '',
-                status: 'You don\'t have an active session. Please log in:',
+                message: 'You don\'t have an active session. Please log in:'
             }
         });
     }
+}
 
-    
+export function pendingLogin(){
+    Dispatcher.dispatch({
+        actionType: FLUX_ACTIONS.UPDATE_SESSION,
+        payload: {
+            loginStatus: {
+                code: 1
+            },
+        }
+    });
+}
 
+export function login(credentials){
+    ApiReq.authenticate(false, credentials.oaUrl.value,
+        credentials.oaUsername.value,
+        credentials.oaPassword.value).then(response => {
 
+        if(response.status === 200){
+            //session key saved in browser local storage for persistence
+            SessionCache.setSessionData(OA_LOCAL_STORE_NAME,
+                                        response,
+                                        credentials.oaUrl.value);
 
+            let key = response.headers['x-sessionkey'];
+            Dispatcher.dispatch({
+                actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                payload: {
+                    fullName: '',
+                    key: key,
+                    message: 'Authentication successful',
+                    loginStatus: {
+                        code: 2,
+                        message: `Authentication successful: 
+                                  Session Key ${key}`,
+                        class: 'success'
+                    }
+                }
+            });
+        } else {
+            Dispatcher.dispatch({
+                actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                payload: {
+                    loginStatus: {
+                        code: 0,
+                        message: `Authentication failed:
+                                  ${response.data.error_message}`,
+                        class: 'error'
+                    }
+                }
+            });
+        }
+
+    }).catch(error => { //general network error
+        console.error(error);
+    });
 }

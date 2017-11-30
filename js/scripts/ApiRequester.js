@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {BASE_NOUN} from './Constants';
+import {BASE_REST_URL} from './Constants';
 
 
 export default {
@@ -17,6 +17,7 @@ export default {
             console.error('Axios API request failed');
 
             if(error.message && error.message === 'Network Error'){
+                let baseUrl = url.substring(0, url.indexOf(BASE_REST_URL));
                 return {
                     data: {
                         error_message: `Not able to contact the OpenAsset 
@@ -45,7 +46,7 @@ export default {
      */
     authenticate: function(key, ...credentials){
 
-        let baseUrl = credentials[0] + BASE_NOUN;
+        let baseUrl = credentials[0] + BASE_REST_URL;
         let authUserUrl = `Users?username=${credentials[1]}`;
         let fullUrl = baseUrl + authUserUrl;
         let config = {

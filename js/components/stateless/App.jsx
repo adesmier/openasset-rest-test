@@ -5,13 +5,16 @@ import NavButton from './NavButton.jsx';
 import SideBar from './SideBar.jsx';
 
 export default function App(props){
-    return[
-        <Header />,
-        <NavButton targetId="auth-nav-sidebar"
-                   classToggle="active"
-                   addClassBar1=""
-                   addClassBar2=""
-                   addClassBar3="" />,
-        <SideBar />
-    ];
+    return(
+        <React.Fragment>
+            <Header />
+            <NavButton id="main-menu-btn"
+                       targetId="auth-nav-sidebar"
+                       classToggle="active"
+                       addClassBar1=""
+                       addClassBar2=""
+                       addClassBar3="" />
+            <SideBar />
+        </React.Fragment>
+    )
 }

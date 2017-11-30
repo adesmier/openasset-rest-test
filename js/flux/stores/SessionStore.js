@@ -14,7 +14,12 @@ class SessionStore extends EventEmitter{
         this.session = {
             fullName: '',
             key: '',
-            status: '',
+            message: 'You don\'t have an active session. Please log in:',
+            loginStatus: {
+                code: 0,
+                message: '',
+                class: ''
+            },
         }
     }
 
@@ -22,7 +27,7 @@ class SessionStore extends EventEmitter{
         switch(action.actionType){
             case FLUX_ACTIONS.UPDATE_SESSION:
                 this.updateSession(action.payload);
-            break;
+                break;
         }
     }
 
@@ -30,16 +35,10 @@ class SessionStore extends EventEmitter{
         return this.session;
     }
 
-    updateSession(data){
-        console.log(data);
-        this.session = {
-            username: data.username,
-            key: data.key
-        }
-
+    updateSession(payload){
+        Object.assign(this.session, payload);
         this.emit('change');
     }
 }
 
-window.dispatcher = Dispatcher;
 export default new SessionStore;

@@ -1,11 +1,15 @@
 import React from 'react';
 
+import DynamicButton from './reusable/DynamicButton.jsx'
+
 import SessionStore from '../flux/stores/SessionStore.js'
 import * as SessionActions from '../flux/actions/SessionActions.js';
+
 import ApiReq from '../scripts/ApiRequester.js';
 import SessionCache from '../scripts/SessionCache.js';
 import {OA_LOCAL_STORE_NAME} from '../scripts/Constants';
 
+/******************************************************************************/
 
 export default class LoginForm extends React.Component{
 
@@ -15,12 +19,7 @@ export default class LoginForm extends React.Component{
             oaUsername: {value: '', isEmptyClass: ''},
             oaPassword: {value: '', isEmptyClass: ''},
         },
-        sessionStatus: SessionStore.getSession(),
-        loginStatus: {
-            message: '',
-            class: ''
-        },
-        authStatus: 0
+        sessionStatus: SessionStore.getSession()
     }
 
     componentWillMount(){
@@ -33,60 +32,6 @@ export default class LoginForm extends React.Component{
 
     componentDidMount(){
         SessionActions.checkSession(OA_LOCAL_STORE_NAME);
-
-
-        // let sessionData = SessionCache.getSessionData(OA_LOCAL_STORE_NAME);
-
-        // if(sessionData){
-        //     let user = ''; let username = '';
-        //     let url = ''; let session = '';
-
-        //     if(sessionData.headers && sessionData.headers['x-sessionkey']){
-        //         session = sessionData.headers['x-sessionkey'];
-        //         if(sessionData.oaUrl){
-        //             url = sessionData.oaUrl;
-        //             if(sessionData.data[0]){
-        //                 user = sessionData.data[0].full_name;
-        //                 username = sessionData.data[0].username;
-        //             }
-        //         }
-        //     } else {
-        //         console.error('There is no session key stored in the cached session data');
-        //         return;
-        //     }
-
-        //     //check if stored key is still valid
-        //     ApiReq.authenticate(true, url,username,session).then(response => {
-
-        //         if(response.data.error_message && response.status === 401){
-        //             this.setState({
-        //                 sessionStatus: `Welcome back ${user}. Your previous session 
-        //                                 has expired. Please log in again.`,
-        //                 loginStatus: {
-        //                     message: `Existing session invalid: Session Key ${session}`,
-        //                     class: 'error'
-        //                 }
-        //             });
-        //         } else if(response.status === 200){
-        //             this.setState({
-        //                 sessionStatus: `Welcome back ${user}. Your previous session 
-        //                                 is still active. No need to login.`,
-        //                 loginStatus: {
-        //                     message: `Authentication successful: Using existing session Key ${session}`,
-        //                     class: 'success'
-        //                 },
-        //                 authStatus: 2
-        //             });
-        //         }
-        //         console.log(response);
-                
-        //     }).catch(error => { //general network error
-        //         console.log(error);
-        //     });
-        
-            
-        // }
-
     }
 
     inputChangeHandler = (evt) => {
@@ -113,7 +58,7 @@ export default class LoginForm extends React.Component{
     authRequest = () => {
         let credentials = this.state.credentials;
         let hasEmptyField = false;
-        this.submitBtn.blur();
+        //this.submitBtn.blur();
 
         //if any input fields are empty then a class will be added
         //to alert the user to the input field
@@ -138,53 +83,20 @@ export default class LoginForm extends React.Component{
             });
         } else { //no fields empty so make auth api call
 
-            this.setState({authStatus: 1});
-
-            console.log(this.state);
-            ApiReq.authenticate(false, credentials.oaUrl.value,
-                credentials.oaUsername.value,
-                credentials.oaPassword.value).then(response => {
-
-                if(response.status === 200){
-                    //session key saved in localstorage for persistence
-                    SessionCache.setSessionData(OA_LOCAL_STORE_NAME, response, credentials.oaUrl.value);
-                    let key = response.headers['x-sessionkey'];
-                    this.setState({
-                        loginStatus: {
-                            message: `Authentication successful: Session Key ${key}`,
-                            class: 'success'
-                        },
-                        authStatus: 2
-                    });
-                } else {
-                    this.setState({
-                        loginStatus: {
-                            message: `Authentication failed: ${response.data.error_message}`,
-                            class: 'error'
-                        },
-                        authStatus: 0
-                    });
-                }
-
-                
-
-                console.log(response);
-
-            }).catch(error => { //general network error
-                console.error(error);
-            });
+            SessionActions.pendingLogin();
+            SessionActions.login(credentials);
 
         }
-        
     }
 
     render(){
         const {oaUrl, oaUsername, oaPassword} = this.state.credentials;
-        const {sessionStatus, loginStatus, authStatus} = this.state;
+        const {sessionStatus} = this.state;
+        const {loginStatus} = sessionStatus;
 
         let submitBtnContent;
         let inputDisabled;
-        switch(authStatus){
+        switch(loginStatus.code){
             case 0:
                 submitBtnContent = 'Submit';
                 inputDisabled = false;
@@ -199,59 +111,62 @@ export default class LoginForm extends React.Component{
                 break;
         }
 
-        return[
-            <div className="session-check">
-                <span><em>{sessionStatus}</em></span>
-            </div>,
-            <form>
-                <div className="row">
-                    <div>
-                        <label htmlFor="oaUrl">Your OpenAsset URL</label>
-                        <span>https://</span>
-                        <input className={['u-half-width', oaUrl.isEmptyClass].join(' ')}
-                               type="text"
-                               placeholder="subdomain"
-                               name="oaUrl"
-                               onChange={evt => this.inputChangeHandler(evt)}
-                               disabled={inputDisabled} />
-                        <span>.openasset.com</span>
-                    </div>
+        return(
+            <React.Fragment>
+                <div className="session-check">
+                    <span><em>{sessionStatus.message}</em></span>
                 </div>
-                <div className="row">
-                    <div className="six columns">
-                        <label htmlFor="oaUsername">OpenAsset Username</label>
-                        <input className={['u-half-width', oaUsername.isEmptyClass].join(' ')}
-                               type="text"
-                               placeholder="Username"
-                               name="oaUsername"
-                               onChange={evt => this.inputChangeHandler(evt)}
-                               disabled={inputDisabled} />
+                <form>
+                    <div className="row">
+                        <div>
+                            <label htmlFor="oaUrl">Your OpenAsset URL</label>
+                            <span>https://</span>
+                            <input className={['u-half-width',
+                                            oaUrl.isEmptyClass].join(' ')}
+                                type="text"
+                                placeholder="subdomain"
+                                name="oaUrl"
+                                onChange={evt => this.inputChangeHandler(evt)}
+                                disabled={inputDisabled} />
+                            <span>.openasset.com</span>
+                        </div>
                     </div>
-                    <div className="six columns">
-                        <label htmlFor="oaPassword">OpenAsset Password</label>
-                        <input className={['u-half-width', oaPassword.isEmptyClass].join(' ')}
-                               type="password"
-                               name="oaPassword"
-                               onChange={evt => this.inputChangeHandler(evt)}
-                               disabled={inputDisabled} />
+                    <div className="row">
+                        <div className="six columns">
+                            <label htmlFor="oaUsername">OpenAsset Username</label>
+                            <input className={['u-half-width',
+                                            oaUsername.isEmptyClass].join(' ')}
+                                type="text"
+                                placeholder="Username"
+                                name="oaUsername"
+                                onChange={evt => this.inputChangeHandler(evt)}
+                                disabled={inputDisabled} />
+                        </div>
+                        <div className="six columns">
+                            <label htmlFor="oaPassword">OpenAsset Password</label>
+                            <input className={['u-half-width',
+                                            oaPassword.isEmptyClass].join(' ')}
+                                type="password"
+                                name="oaPassword"
+                                onChange={evt => this.inputChangeHandler(evt)}
+                                disabled={inputDisabled} />
+                        </div>
                     </div>
-                </div>
-                <div id="submit-btn-wrapper" className="row">
-                    <button className="button-primary pending"
-                            type="button"
-                            //manage button focus
-                            ref={(submitBtn) => {this.submitBtn = submitBtn}}
-                            onClick={() => {this.authRequest()}}
-                            disabled={inputDisabled}>
-                            {submitBtnContent}
-                    </button>
-                    <span className={['login-status', loginStatus.class].join(' ')}>
-                        {loginStatus.message}
-                    </span>
-                    <span>{this.state.testStore.key}</span>
-                </div>
-                <hr />
-            </form>
-        ];
+                    <div id="submit-btn-wrapper" className="row">
+                        <DynamicButton classes={['button-primary']}
+                                       btnType="button"
+                                    //    btnRef=""
+                                       clickHandler={this.authRequest}
+                                       btnDisabled={inputDisabled}
+                                       btnContent={submitBtnContent} />
+                        <span key={loginStatus.code} className={['login-status',
+                                        loginStatus.class].join(' ')}>
+                            {loginStatus.message}
+                        </span>
+                    </div>
+                    <hr />
+                </form>
+            </React.Fragment>
+        )
     }
 }
