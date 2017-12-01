@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 
 const DynamicButton = (props) => {
 
-    const {classes, btnType, btnRef,
+    const {classes, btnType, btnRef, width,
            clickHandler, btnDisabled, btnContent} = props;
 
     return(
         <button className={classes.concat(['button']).join(' ')}
                 type={btnType}
+                style={{width: width}}
                 //manage button focus
                 // ref={(submitBtn) => {this.submitBtn = submitBtn}}
                 onClick={clickHandler}

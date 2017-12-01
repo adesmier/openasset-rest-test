@@ -14,6 +14,7 @@ class SessionStore extends EventEmitter{
         this.session = {
             fullName: '',
             key: '',
+            url: '',
             message: 'You don\'t have an active session. Please log in:',
             loginStatus: {
                 code: 0,
@@ -37,6 +38,7 @@ class SessionStore extends EventEmitter{
 
     updateSession(payload){
         Object.assign(this.session, payload);
+        console.log('Session Store is: ', JSON.stringify(this.session));
         this.emit('change');
     }
 }

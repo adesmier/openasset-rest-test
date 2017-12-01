@@ -6,4 +6,5 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome.scss";
 
 @import "custom/globals";
-@import "custom/styles";
+@import "custom/authentication";
+@import "custom/buildApiCall";

@@ -42,6 +42,7 @@ export function checkSession(localStoreName){
                     payload: {
                         fullName: user,
                         key: session,
+                        url: url,
                         message: `Welcome back ${user}. Your previous session
                                   is still active. No need to login.`,
                         loginStatus: {
@@ -96,6 +97,7 @@ export function login(credentials){
                 payload: {
                     fullName: '',
                     key: key,
+                    url: credentials.oaUrl.value,
                     message: 'Authentication successful',
                     loginStatus: {
                         code: 2,

@@ -30,6 +30,12 @@ export default class LoginForm extends React.Component{
         });
     }
 
+    componentWillUnmount(){
+        SessionStore.removeListener('change', () => {
+            console.log('Change listener removed from LoginForm component')
+        });
+    }
+
     componentDidMount(){
         SessionActions.checkSession(OA_LOCAL_STORE_NAME);
     }
@@ -157,6 +163,7 @@ export default class LoginForm extends React.Component{
                                        btnType="button"
                                     //    btnRef=""
                                        clickHandler={this.authRequest}
+                                       width="120px"
                                        btnDisabled={inputDisabled}
                                        btnContent={submitBtnContent} />
                         <span key={loginStatus.code} className={['login-status',

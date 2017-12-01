@@ -77,13 +77,6 @@ input.auth-input-empty[type]{
 
 #submit-btn-wrapper{
     display: flex;
-    button{
-        width: 120px;
-        i{
-            font-weight: 300;
-            font-size: 140%;
-        }
-    }
 }
 
 .login-status{
@@ -97,6 +90,13 @@ input.auth-input-empty[type]{
 .login-status.error{
     color: #be2e2e;
 }
+
+
+
+
+
+
+
 
 
 
