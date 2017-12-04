@@ -1,13 +1,13 @@
 import React from 'react';
 
-import DynamicButton from './reusable/DynamicButton.jsx'
+import DynamicButton from 'components/reusable/DynamicButton'
 
-import SessionStore from '../flux/stores/SessionStore.js'
-import * as SessionActions from '../flux/actions/SessionActions.js';
+import SessionStore from 'flux/stores/SessionStore'
+import * as SessionActions from 'flux/actions/SessionActions';
 
-import ApiReq from '../scripts/ApiRequester.js';
-import SessionCache from '../scripts/SessionCache.js';
-import {OA_LOCAL_STORE_NAME} from '../scripts/Constants';
+import ApiReq from 'scripts/ApiRequester';
+import SessionCache from 'scripts/SessionCache';
+import {OA_LOCAL_STORE_NAME} from 'scripts/Constants';
 
 /******************************************************************************/
 
@@ -64,7 +64,7 @@ export default class LoginForm extends React.Component{
     authRequest = () => {
         let credentials = this.state.credentials;
         let hasEmptyField = false;
-        //this.submitBtn.blur();
+        //this.dynButton.blur();
 
         //if any input fields are empty then a class will be added
         //to alert the user to the input field
@@ -161,7 +161,6 @@ export default class LoginForm extends React.Component{
                     <div id="submit-btn-wrapper" className="row">
                         <DynamicButton classes={['button-primary']}
                                        btnType="button"
-                                    //    btnRef=""
                                        clickHandler={this.authRequest}
                                        width="120px"
                                        btnDisabled={inputDisabled}

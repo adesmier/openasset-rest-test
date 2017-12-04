@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Header from './Header.jsx';
-import NavButton from './NavButton.jsx';
-import SideBar from './SideBar.jsx';
+import Header from './Header';
+import NavButton from 'components/reusable/NavButton';
+import SideBar from 'components/sidebar/SideBar';
 
 export default function App(props){
     return(

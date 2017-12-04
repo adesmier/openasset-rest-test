@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {BASE_REST_URL} from '../../scripts/Constants';
+import {BASE_REST_URL} from 'scripts/Constants';
 
 
 const ApiCallDisplay = (props) => {

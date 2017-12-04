@@ -3,3 +3,12 @@ body{
     width: 70%;
     overflow-x: hidden;
 }
+
+button.button-primary:disabled{
+    background-color: #eeeeee;
+    border-color: #eeeeee;
+}
+
+i.fa{
+    font-size: 130%;
+}

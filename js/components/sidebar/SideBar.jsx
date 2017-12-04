@@ -1,11 +1,10 @@
 import React from 'react';
 
-import SessionStore from '../../flux/stores/SessionStore.js'
+import SessionStore from 'flux/stores/SessionStore'
 
-import NavButton from './NavButton.jsx';
-import Header from './Header.jsx';
-import Login from './Login.jsx';
-import ApiSelector from './ApiSelector.jsx';
+import NavButton from 'components/reusable/NavButton';
+import Login from 'components/sidebar/authentication/Login';
+import ApiSelector from 'components/sidebar/buildapicall/ApiSelector';
 
 
 export default class SideBar extends React.Component{

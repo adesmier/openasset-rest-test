@@ -4,16 +4,22 @@ import PropTypes from 'prop-types';
 
 const DynamicButton = (props) => {
 
+    let dynButton = null;
     const {classes, btnType, btnRef, width,
            clickHandler, btnDisabled, btnContent} = props;
+
+    const handleClick = () => {
+        dynButton.blur();
+        clickHandler();
+    }
 
     return(
         <button className={classes.concat(['button']).join(' ')}
                 type={btnType}
                 style={{width: width}}
                 //manage button focus
-                // ref={(submitBtn) => {this.submitBtn = submitBtn}}
-                onClick={clickHandler}
+                ref={(button) => {dynButton = button;}}
+                onClick={handleClick}
                 disabled={btnDisabled}>
                 {btnContent}
         </button>
