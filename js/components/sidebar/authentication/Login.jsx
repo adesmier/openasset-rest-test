@@ -4,9 +4,9 @@ import LoginForm from './LoginForm';
 
 export default function Login(props){
     return(
-        <React.Fragment>
+        <section id="sidebar-auth">
             <h5>Authenticate to your OpenAsset Instance</h5>
             <LoginForm />
-        </React.Fragment>
+        </section>
     )
 }

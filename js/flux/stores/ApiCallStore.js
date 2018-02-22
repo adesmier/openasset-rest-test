@@ -13,30 +13,30 @@ class ApiCallStore extends EventEmitter{
 
         this.apiCall = {
             endpoint: '',
+            endpointUrl: '',
             parameters: {}
-        },
+        }
 
     }
 
     handleActions(action){
         switch(action.actionType){
-            case FLUX_ACTIONS.UPDATE_APICALL:
+            case FLUX_ACTIONS.UPDATE_API_ENDPOINT:
+                this.updateApiCall(action.payload);
+                break;
+            case FLUX_ACTIONS.UPDATE_API_ENDPOINT_URL:
                 this.updateApiCall(action.payload);
                 break;
         }
     }
 
     getApiCall(){
-
-
-
-
         return this.apiCall;
     }
 
     updateApiCall(payload){
-        Object.assign(this.session, payload);
-        console.log('Session Store is: ', JSON.stringify(this.session));
+        Object.assign(this.apiCall, payload);
+        console.log('ApiCall Store is: ', JSON.stringify(this.apiCall));
         this.emit('change');
     }
 }

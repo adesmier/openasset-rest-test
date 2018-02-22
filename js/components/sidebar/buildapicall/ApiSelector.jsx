@@ -1,30 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import * as ApiCallActions from 'flux/actions/ApiCallActions'
+
 import {OA_API_ENDPOINTS} from 'scripts/Constants';
 import DynamicButton from 'components/reusable/DynamicButton';
 import ApiCallDisplay from './ApiCallDisplay';
 import Header from './Header';
 
+import Endpoint from './Endpoint'
+
 
 export default class ApiSelector extends React.Component{
+
+    state = {
+        renderedEndpoint: null
+    }
 
     static propTypes = {
         oaBaseUrl: PropTypes.string
     }
 
     componentDidMount(){
+        const {oaBaseUrl} = this.props;
         window.CustomScroll.toElement('api-header', 'smooth', 'start');
     }
 
-    renderEndpointOptions = (endpoint) => {
-
+    renderEndpointOptions = (apiEndpoint) => {
+        ApiCallActions.setEndpoint(apiEndpoint);
     }
 
 
     render(){
+        const {renderedEndpoint} = this.state;
+
         return(
-            <React.Fragment>
+            <section id="sidebar-api">
                 <Header />
                 <ApiCallDisplay oaBaseUrl={this.props.oaBaseUrl} />
                 <span><em>What information do you wish to retrieve from
@@ -38,20 +49,8 @@ export default class ApiSelector extends React.Component{
                                 btnContent={item} />)}
 
                 </div>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-                <p>sdfsdfsdf</p>
-            </React.Fragment>
+                <Endpoint />
+            </section>
         )
     }
 

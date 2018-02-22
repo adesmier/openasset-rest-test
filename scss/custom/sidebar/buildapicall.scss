@@ -1,3 +1,7 @@
+#sidebar-api{
+    height: 2000px;
+}
+
 #rest-noun-btn-wrapper{
     display: flex;
     margin-top: 10px;
@@ -6,7 +10,19 @@
     justify-content: space-between;
 }
 
+#api-current-call{
+    font-size: 110%;
+}
+
 #build-api-header-wrapper{
     display: flex;
     justify-content: space-between;
+}
+
+#api-projects-endpoint{
+    h6{
+        text-align: center;
+        text-transform: uppercase;
+    }
+    margin-top: 10px;
 }

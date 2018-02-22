@@ -10,10 +10,7 @@ export default function App(props){
             <Header />
             <NavButton id="main-menu-btn"
                        targetId="auth-nav-sidebar"
-                       classToggle="active"
-                       addClassBar1=""
-                       addClassBar2=""
-                       addClassBar3="" />
+                       classToggle="active" />
             <SideBar />
         </React.Fragment>
     )
