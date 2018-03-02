@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import {BASE_REST_URL} from './Constants';
+import {BASE_REST_URL} from './constants';
 
 
 export default {

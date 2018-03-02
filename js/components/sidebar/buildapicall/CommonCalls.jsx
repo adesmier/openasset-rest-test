@@ -1,15 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 
-import * as ApiCallActions from 'flux/actions/ApiCallActions'
-import {COMMON_CALLS} from 'scripts/Constants'
+import {COMMON_CALLS} from 'scripts/constants'
 
 
 export default class CommonCalls extends React.Component{
 
-    static propTypes = {
-        endpoint: PropTypes.string.isRequired
-    }
+    // static propTypes = {
+    //     endpoint: PropTypes.string.isRequired
+    // }
 
     componentWillMount(){
         const {endpoint} = this.props;
@@ -55,8 +54,9 @@ export default class CommonCalls extends React.Component{
     }
 
     changeHandler = (evt) => {
-        this.setState({ dropDownValue: evt.target.value });
-        ApiCallActions.setEndpointUrl(evt.target.value);
+        //this.setState({ dropDownValue: evt.target.value });
+        //ApiCallActions.setEndpointUrl(evt.target.value);
+        console.log('api call changed');
     }
 
     render(){

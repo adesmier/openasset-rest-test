@@ -1,43 +1,38 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import DynamicButton from 'components/reusable/DynamicButton'
+import { checkSession, login } from 'redux/actions/sessionActions';
 
-import SessionStore from 'flux/stores/SessionStore'
-import * as SessionActions from 'flux/actions/SessionActions';
+import ApiReq from 'scripts/apiRequester';
+import SessionCache from 'scripts/sessionCache';
+import {OA_LOCAL_STORE_NAME} from 'scripts/constants';
 
-import ApiReq from 'scripts/ApiRequester';
-import SessionCache from 'scripts/SessionCache';
-import {OA_LOCAL_STORE_NAME} from 'scripts/Constants';
 
-/******************************************************************************/
+const mapDispatchToProps = dispatch => ({
+    checkSession: localStoreName => dispatch(checkSession(localStoreName)),
+    login: credentials => dispatch(login(credentials))
+});
 
-export default class LoginForm extends React.Component{
+
+class ConnectedLoginForm extends React.Component{
 
     state = {
         credentials: {
             oaUrl: {value: '', isEmptyClass: ''},
             oaUsername: {value: '', isEmptyClass: ''},
             oaPassword: {value: '', isEmptyClass: ''},
-        },
-        sessionStatus: SessionStore.getSession()
+        }
     }
 
     componentWillMount(){
-        SessionStore.on('change', () => {
-            this.setState({
-                sessionStatus: SessionStore.getSession()
-            });
-        });
     }
 
     componentWillUnmount(){
-        SessionStore.removeListener('change', () => {
-            console.log('Change listener removed from LoginForm component')
-        });
     }
 
     componentDidMount(){
-        SessionActions.checkSession(OA_LOCAL_STORE_NAME);
+        this.props.checkSession(OA_LOCAL_STORE_NAME);
     }
 
     inputChangeHandler = (evt) => {
@@ -89,16 +84,16 @@ export default class LoginForm extends React.Component{
             });
         } else { //no fields empty so make auth api call
 
-            SessionActions.pendingLogin();
-            SessionActions.login(credentials);
+            //SessionActions.pendingLogin();
+            this.props.login(credentials);
 
         }
     }
 
     render(){
-        const {oaUrl, oaUsername, oaPassword} = this.state.credentials;
-        const {sessionStatus} = this.state;
-        const {loginStatus} = sessionStatus;
+        const { oaUrl, oaUsername, oaPassword } = this.state.credentials;
+        const { session } = this.props;
+        const { loginStatus } = session;
 
         let submitBtnContent;
         let inputDisabled;
@@ -120,7 +115,7 @@ export default class LoginForm extends React.Component{
         return(
             <React.Fragment>
                 <div className="session-check">
-                    <span><em>{sessionStatus.message}</em></span>
+                    <span><em>{session.message}</em></span>
                 </div>
                 <form>
                     <div className="row">
@@ -176,3 +171,8 @@ export default class LoginForm extends React.Component{
         )
     }
 }
+
+
+const LoginForm = connect(null, mapDispatchToProps)(ConnectedLoginForm);
+
+export default LoginForm;

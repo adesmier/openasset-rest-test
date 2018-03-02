@@ -30,7 +30,7 @@ export function checkSession(localStoreName){
 
             if(response.data.error_message && response.status === 401){
                 Dispatcher.dispatch({
-                    actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                    actionType: FLUX_ACTIONS.SESSION_NOT_VALID,
                     payload: {
                         message: `Welcome back ${user}. Your previous 
                                   session has expired. Please log in again.`
@@ -38,7 +38,7 @@ export function checkSession(localStoreName){
                 });
             } else if(response.status === 200){
                 Dispatcher.dispatch({
-                    actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                    actionType: FLUX_ACTIONS.SESSION_STILL_VALID,
                     payload: {
                         fullName: user,
                         key: session,
@@ -61,7 +61,7 @@ export function checkSession(localStoreName){
 
     } else {
         Dispatcher.dispatch({
-            actionType: FLUX_ACTIONS.UPDATE_SESSION,
+            actionType: FLUX_ACTIONS.SESSION_NOT_VALID,
             payload: {
                 message: 'You don\'t have an active session. Please log in:'
             }
@@ -71,10 +71,12 @@ export function checkSession(localStoreName){
 
 export function pendingLogin(){
     Dispatcher.dispatch({
-        actionType: FLUX_ACTIONS.UPDATE_SESSION,
+        actionType: FLUX_ACTIONS.LOGIN_PENDING,
         payload: {
             loginStatus: {
-                code: 1
+                code: 1,
+                message: '',
+                class: ''
             },
         }
     });
@@ -93,7 +95,7 @@ export function login(credentials){
 
             let key = response.headers['x-sessionkey'];
             Dispatcher.dispatch({
-                actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                actionType: FLUX_ACTIONS.LOGIN_SUCCESS,
                 payload: {
                     fullName: '',
                     key: key,
@@ -109,7 +111,7 @@ export function login(credentials){
             });
         } else {
             Dispatcher.dispatch({
-                actionType: FLUX_ACTIONS.UPDATE_SESSION,
+                actionType: FLUX_ACTIONS.LOGIN_FAILED,
                 payload: {
                     loginStatus: {
                         code: 0,
