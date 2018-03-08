@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import NavButton from 'components/reusable/NavButton';
 import Login from 'components/sidebar/authentication/Login';
-import ApiSelector from 'components/sidebar/buildapicall/ApiSelector';
+import ApiSelector from 'components/sidebar/buildapicall/apiselector/index';
 
 
 const mapStateToProps = state => ({

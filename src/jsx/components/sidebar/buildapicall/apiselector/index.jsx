@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 //import PropTypes from 'prop-types';
 
 import DynamicButton from 'components/reusable/DynamicButton';
-import ApiCallDisplay from './ApiCallDisplay';
-import Header from './Header';
-import Endpoint from './Endpoint'
+import ApiCallDisplay from 'components/sidebar/buildapicall/apicalldisplay/index';
+import Header from 'components/sidebar/buildapicall/Header';
+import Endpoint from 'components/sidebar/buildapicall/Endpoint'
 import { endpointSelected } from 'redux/actions/queryActions'
 
 import {OA_API_ENDPOINTS} from 'scripts/constants';
+
+import Styles from './styles.scss';
 
 
 const mapDispatchToProps = dispatch => ({
@@ -42,13 +44,13 @@ class ConnectedApiSelector extends React.Component{
         const { oaBaseUrl, query, endpointSelected } = this.props;
 
         return(
-            <section id="sidebar-api">
+            <section id={Styles.sidebarApi}>
                 <Header />
                 <ApiCallDisplay oaBaseUrl={oaBaseUrl}
                                 query={query} />
                 <span><em>What information do you wish to retrieve from
                           OpenAsset?</em></span>
-                <div id="rest-noun-btn-wrapper">
+                <div id={Styles.restNounBtnWrapper}>
 
                 {OA_API_ENDPOINTS.map((endpoint) => <DynamicButton key={endpoint}
                             btnDisabled={false}

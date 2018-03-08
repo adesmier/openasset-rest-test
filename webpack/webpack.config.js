@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 let baseSrcDir    = path.join(__dirname, '../src');
 let baseAssetsDir = path.join(__dirname, '../assets');
 
+//https://hackernoon.com/webpack-3-quickstarter-configure-webpack-from-scratch-30a6c394038a
 
 //auto inject css file in the head of html doc
 //https://scotch.io/tutorials/setup-a-react-environment-using-webpack-and-babel
@@ -15,11 +16,19 @@ const htmlWebpackPluginConfig = new HtmlWebpackPlugin({
 });
 
 
+const devServer = {
+    compresss: true,
+    port: 3333,
+    stats: 'errors-only'
+}
+const devTool = 'inline-source-map';
+
+
 module.exports = {
     entry: {
         bundle: [
-            //react code bundle and scss input file
-            path.join(baseSrcDir, 'js/index.js'),
+            //react code bundle and scss (non-modular) input file
+            path.join(baseSrcDir, 'jsx/index.js'),
             path.join(baseAssetsDir, 'scss/main.scss')
         ],
         main: [
@@ -40,6 +49,7 @@ module.exports = {
         extensions: ['.js', '.jsx'],
         modules: [
             path.resolve('./src/js'),
+            path.resolve('./src/jsx'),
             path.resolve('./node_modules')
         ]
     },
@@ -66,7 +76,17 @@ module.exports = {
                 exclude: [/node_modules/, /src/],
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: ['css-loader', 'sass-loader']
+                    use: [
+                        {
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: true
+                            }
+                        }                   
+                    ]
                 })
             },
             {
@@ -80,12 +100,15 @@ module.exports = {
                             options: {
                                 modules: true,
                                 sourceMap: true,
-                                importLoaders: 2,
+                                importLoaders: 1,
                                 localIdentName: '[name]__[local]___[hash:base64:5]'
                             }
                         },
                         {
-                            loader: 'sass-loader'
+                            loader: 'sass-loader',
+                            options: {
+                                sourceMap: true
+                            }
                         }
                     ]
                 })

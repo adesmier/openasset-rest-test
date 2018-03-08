@@ -3,6 +3,8 @@ import React from 'react';
 
 import {BASE_REST_URL} from 'scripts/constants';
 
+import Styles from './styles.scss';
+
 
 const ApiCallDisplay = props => {
 
@@ -14,7 +16,7 @@ const ApiCallDisplay = props => {
     return(
         <React.Fragment>
             <h6>Current Call URL:</h6>
-            <p id="api-current-call"><strong><em>{fullUrl}</em></strong></p>
+            <p id={Styles.apiCurrentCall}><strong><em>{fullUrl}</em></strong></p>
         </React.Fragment>
     )
 
