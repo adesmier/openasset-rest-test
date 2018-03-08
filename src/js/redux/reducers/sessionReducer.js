@@ -31,16 +31,16 @@ const updateSession = (state, payload) => (
 const sessionReducer = (state = initialState, action) => {
     switch(action.type) {
         case REDUX_ACTIONS.SESSION_STILL_VALID:
-            updateSession(state, action.payload);
+            return updateSession(state, action.payload);
         case REDUX_ACTIONS.SESSION_NOT_VALID:
-            sessionNotValid(state, action.payload);
+            return sessionNotValid(state, action.payload);
         case REDUX_ACTIONS.LOGIN_PENDING:
             console.log('REDUX_ACTIONS: LOGIN_PENDING ', action.payload);
-            updateSession(state, action.payload);
+            return updateSession(state, action.payload);
         case REDUX_ACTIONS.LOGIN_SUCCESS:
-            updateSession(state, action.payload);
+            return updateSession(state, action.payload);
         case REDUX_ACTIONS.LOGIN_FAILED:
-            updateSession(state, action.payload);
+            return updateSession(state, action.payload);
         default:
             return state
     }

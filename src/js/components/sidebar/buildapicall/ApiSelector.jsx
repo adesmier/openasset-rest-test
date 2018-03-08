@@ -6,13 +6,13 @@ import DynamicButton from 'components/reusable/DynamicButton';
 import ApiCallDisplay from './ApiCallDisplay';
 import Header from './Header';
 import Endpoint from './Endpoint'
-import { updateQuery } from 'redux/actions/queryActions'
+import { endpointSelected } from 'redux/actions/queryActions'
 
 import {OA_API_ENDPOINTS} from 'scripts/constants';
 
 
 const mapDispatchToProps = dispatch => ({
-    updateQuery: payload => dispatch(updateQuery(payload))
+    endpointSelected: payload => dispatch(endpointSelected(payload))
 });
 
 
@@ -39,7 +39,7 @@ class ConnectedApiSelector extends React.Component{
 
     render(){
         //const {renderedEndpoint} = this.state;
-        const { oaBaseUrl, query, updateQuery } = this.props;
+        const { oaBaseUrl, query, endpointSelected } = this.props;
 
         return(
             <section id="sidebar-api">
@@ -53,17 +53,19 @@ class ConnectedApiSelector extends React.Component{
                 {OA_API_ENDPOINTS.map((endpoint) => <DynamicButton key={endpoint}
                             btnDisabled={false}
                             width="200px"
-                            clickHandler={() => updateQuery({endpoint})}
+                            clickHandler={() => endpointSelected({endpoint})}
                             btnContent={endpoint} />)}
 
                 </div>
-                <Endpoint query={query} />
+                {query.endpoint &&
+                    <Endpoint query={query} />
+                }
             </section>
         )
     }
 }
 
 
-const ApiSelector = connect(mapDispatchToProps)(ConnectedApiSelector);
+const ApiSelector = connect(null, mapDispatchToProps)(ConnectedApiSelector);
 
 export default ApiSelector;

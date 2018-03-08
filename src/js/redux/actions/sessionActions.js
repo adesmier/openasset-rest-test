@@ -7,27 +7,27 @@ import ApiReq from 'scripts/apiRequester.js';
  * REDUX SESSION - ACTIONS
  */
 
-export const sessionNotValid = message => ({
+const sessionNotValid = message => ({
     type: REDUX_ACTIONS.SESSION_NOT_VALID,
     payload: { message }
 });
 
-export const sessionStillValid = payload => ({
+const sessionStillValid = payload => ({
     type: REDUX_ACTIONS.SESSION_STILL_VALID,
     payload
 });
 
-export const loginPending = payload => ({
+const loginPending = payload => ({
     type: REDUX_ACTIONS.LOGIN_PENDING,
     payload
 });
 
-export const loginSuccess = payload => ({
+const loginSuccess = payload => ({
     type: REDUX_ACTIONS.LOGIN_SUCCESS,
     payload
 });
 
-export const loginFailed = payload => ({
+const loginFailed = payload => ({
     type: REDUX_ACTIONS.LOGIN_FAILED,
     payload
 });
@@ -108,6 +108,7 @@ export const checkSession = localStoreName => {
 // }
 
 export const login = credentials => {
+    console.log('IN action creator: ', credentials);
     return dispatch => {
         let payload = { loginStatus: { code: 1, message: '', class: '' } };
         dispatch(loginPending(payload));
