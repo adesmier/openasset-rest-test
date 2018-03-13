@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+
 const NavButton = (props) => {
 
     const {id, targetId, classToggle, addClassBar1, addClassBar2, addClassBar3} = props;
@@ -14,6 +15,7 @@ const NavButton = (props) => {
     )
     
 }
+
 
 NavButton.propTypes = {
     targetId: PropTypes.string,

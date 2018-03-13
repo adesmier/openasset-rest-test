@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import LoginForm from './LoginForm';
+
 
 const Login = props => {
     return(
@@ -10,5 +12,12 @@ const Login = props => {
         </section>
     )
 }
+
+
+Login.propTypes = {
+    session: PropTypes.object.isRequired,
+    query:   PropTypes.object.isRequired
+}
+
 
 export default Login;

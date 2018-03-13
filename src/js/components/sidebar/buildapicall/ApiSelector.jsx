@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 
 import DynamicButton from 'components/reusable/DynamicButton';
 import ApiCallDisplay from './ApiCallDisplay';
-import Header from './Header';
 import Endpoint from './Endpoint'
-import { endpointSelected } from 'redux/actions/queryActions'
+import { endpointSelected, updateParameters } from 'redux/actions/queryActions'
 
 import {OA_API_ENDPOINTS} from 'scripts/constants';
 
 
 const mapDispatchToProps = dispatch => ({
-    endpointSelected: payload => dispatch(endpointSelected(payload))
+    endpointSelected: payload => dispatch(endpointSelected(payload)),
+    updateParameters: (endpoint, params) => dispatch(updateParameters(endpoint, params))
 });
 
 
@@ -38,12 +38,26 @@ class ConnectedApiSelector extends React.Component{
 
 
     render(){
-        //const {renderedEndpoint} = this.state;
-        const { oaBaseUrl, query, endpointSelected } = this.props;
+        const { oaBaseUrl, 
+                query,
+                endpointSelected,
+                updateParameters } = this.props;
+
+        let btnContent = (
+            <span>
+                Make the Call <i className="fa fa-phone"></i>
+            </span>
+        );
 
         return(
             <section id="sidebar-api">
-                <Header />
+                <div id="build-api-header-wrapper">
+                    <h5 id="api-header">Build your API Call</h5>
+                    <DynamicButton classes={['button-primary']}
+                            btnDisabled={true}
+                            width="200px"
+                            btnContent={btnContent} />
+                </div>
                 <ApiCallDisplay oaBaseUrl={oaBaseUrl}
                                 query={query} />
                 <span><em>What information do you wish to retrieve from
@@ -53,12 +67,13 @@ class ConnectedApiSelector extends React.Component{
                 {OA_API_ENDPOINTS.map((endpoint) => <DynamicButton key={endpoint}
                             btnDisabled={false}
                             width="200px"
-                            clickHandler={() => endpointSelected({endpoint})}
+                            clickHandler={() => endpointSelected(endpoint)}
                             btnContent={endpoint} />)}
 
                 </div>
                 {query.endpoint &&
-                    <Endpoint query={query} />
+                    <Endpoint query={query} 
+                              updateParams={updateParameters} />
                 }
             </section>
         )

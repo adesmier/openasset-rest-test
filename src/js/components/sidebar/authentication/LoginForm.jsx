@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import DynamicButton from 'components/reusable/DynamicButton'
 import { checkSession, login } from 'redux/actions/sessionActions';
@@ -16,6 +17,11 @@ const mapDispatchToProps = dispatch => ({
 
 
 class ConnectedLoginForm extends React.Component{
+
+    static propTypes = {
+        session: PropTypes.object.isRequired,
+        query:   PropTypes.object.isRequired
+    }
 
     state = {
         credentials: {

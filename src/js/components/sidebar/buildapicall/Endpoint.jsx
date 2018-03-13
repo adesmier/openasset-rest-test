@@ -1,54 +1,22 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
-//import ApiCallStore from 'flux/stores/ApiCallStore';
 import CommonCalls from './CommonCalls';
 
 
 const Endpoint = props => (
     <section id="api-projects-endpoint">
         <h6>{props.query.endpoint}</h6>
-        <CommonCalls endpoint={props.query.endpoint} />
+        <CommonCalls endpoint={props.query.endpoint}
+                        updateParams={props.updateParams} />
     </section>
 );
 
 
+Endpoint.proptypes = {
+    query: PropTypes.object.isRequired,
+    updateParams: PropTypes.func
+}
+
 export default Endpoint;
 
-
-
-// export default class Endpoint extends React.Component{
-
-//     state = {
-//         apiCall: null
-//     };
-
-//     componentWillMount(){
-//         ApiCallStore.on('change', () => {
-//             let apiCall = ApiCallStore.getApiCall();
-//             this.setState({
-//                 apiCall: apiCall
-//             });
-//         });
-//     }
-
-//     componentWillUnmount(){
-//         ApiCallStore.removeListener('change', () => {
-//             console.log('Change listener removed from Endpoint component')
-//         });
-//     }
-
-//     render(){
-//         const {apiCall} = this.state;
-
-//         return(
-//             <section id="api-projects-endpoint">
-//                 {apiCall &&
-//                     <React.Fragment>
-//                         <h6>{apiCall.endpoint}</h6>
-//                         <CommonCalls endpoint={apiCall.endpoint} />
-//                     </React.Fragment>
-//                 }
-//             </section>
-//         )
-//     }
-// }

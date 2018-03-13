@@ -1,14 +1,15 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import {COMMON_CALLS} from 'scripts/constants'
 
 
 export default class CommonCalls extends React.Component{
 
-    // static propTypes = {
-    //     endpoint: PropTypes.string.isRequired
-    // }
+    static propTypes = {
+        endpoint: PropTypes.string.isRequired,
+        updateParams: PropTypes.func
+    }
 
     componentWillMount(){
         const {endpoint} = this.props;
@@ -25,7 +26,6 @@ export default class CommonCalls extends React.Component{
     }
 
     renderDropDownOptions(endpoint){
-        console.log('endpoint', endpoint);
         let dropDownOptions = COMMON_CALLS[endpoint].map(call => {
             let index = call.TITLE.replace(/ /g, '-').toLowerCase();
             return(
@@ -49,14 +49,17 @@ export default class CommonCalls extends React.Component{
 
         this.setState({
             dropDownOptions: dropDownOptions,
-            dropDownValue: dropDownDefault
+            dropDownValue: dropDownDefault 
         });
     }
 
     changeHandler = (evt) => {
-        //this.setState({ dropDownValue: evt.target.value });
-        //ApiCallActions.setEndpointUrl(evt.target.value);
-        console.log('api call changed');
+        const {endpoint} = this.props;
+        const selElement = evt.target;
+        const optionText = selElement.options[selElement.selectedIndex].text
+
+        this.props.updateParams(endpoint, optionText);
+        this.setState({ dropDownValue: selElement.value });
     }
 
     render(){
