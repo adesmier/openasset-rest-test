@@ -39,7 +39,8 @@ module.exports = {
     },
     //only js files are outputted to a script tag
     output: {
-        filename: '[name].js'
+        filename: '[name].js',
+        path: path.resolve(__dirname, '../dist')
     },
     //avoids having to use js/jsx extensions in import calls
     //use path.resolve to import files from js folder root
